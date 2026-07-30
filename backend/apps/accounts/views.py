@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -91,5 +92,12 @@ class CurrentUserAPIView(APIView):
 
     def get(self, request):
         return Response(
-            UserSerializer(request.user).data
+            {
+                "is_authenticated": request.user.is_authenticated,
+                "user": str(request.user),
+                "auth": str(request.auth),
+                "headers": {
+                    "Authorization": request.headers.get("Authorization"),
+                },
+            }
         )
