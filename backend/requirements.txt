@@ -1,8 +1,7 @@
-Django
-djangorestframework
-psycopg2-binary
-python-dotenv
-Pillow
-django-cors-headers
-djangorestframework-simplejwt
-drf-spectacular
+Django==5.2.6
+djangorestframework==3.16.1
+django-cors-headers==4.9.0
+djangorestframework-simplejwt==5.5.1
+drf-spectacular==0.28.0
+python-dotenv==1.1.1
+Pillow==11.3.0
