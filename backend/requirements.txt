@@ -1,0 +1,8 @@
+Django
+djangorestframework
+psycopg2-binary
+python-dotenv
+Pillow
+django-cors-headers
+djangorestframework-simplejwt
+drf-spectacular
