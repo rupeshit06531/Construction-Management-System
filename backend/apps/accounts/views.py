@@ -53,12 +53,21 @@ class LoginAPIView(APIView):
         email = serializer.validated_data["email"]
         password = serializer.validated_data["password"]
 
-        user = authenticate(
-            username=email,
-            password=password
-        )
+        User = get_user_model()
 
-        if user is None:
+        try:
+            user = User.objects.get(
+                email=email
+            )
+        except User.DoesNotExist:
+            return Response(
+                {
+                    "message": "Invalid email or password."
+                },
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        if not user.check_password(password):
             return Response(
                 {
                     "message": "Invalid email or password."
@@ -76,7 +85,6 @@ class LoginAPIView(APIView):
             },
             status=status.HTTP_200_OK
         )
-
 
 class CurrentUserAPIView(APIView):
     permission_classes = [IsAuthenticated]
