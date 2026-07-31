@@ -55,6 +55,11 @@ urlpatterns = [
     ),
 
     path(
+        "api/reports/",
+        include("apps.reports.urls"),
+    ),
+
+    path(
         "api/accounts/token/refresh/",
         TokenRefreshView.as_view(),
         name="token_refresh",
