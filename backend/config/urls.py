@@ -50,6 +50,11 @@ urlpatterns = [
     ),
 
     path(
+        "api/payroll/",
+        include("apps.payroll.urls"),
+    ),
+
+    path(
         "api/accounts/token/refresh/",
         TokenRefreshView.as_view(),
         name="token_refresh",
