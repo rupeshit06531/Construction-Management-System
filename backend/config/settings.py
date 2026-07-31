@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "apps.tasks",
     "apps.materials",
     "apps.inventory",
+    "apps.attendance",
 ]
 
 MIDDLEWARE = [
