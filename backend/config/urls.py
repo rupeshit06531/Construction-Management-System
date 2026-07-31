@@ -32,4 +32,9 @@ urlpatterns = [
         "api/materials/",
         include("apps.materials.urls"),
     ),
+
+    path(
+        "api/inventory/",
+        include("apps.inventory.urls"),
+    ),
 ]
