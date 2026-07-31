@@ -45,6 +45,11 @@ urlpatterns = [
     ),
 
     path(
+        "api/expenses/",
+        include("apps.expenses.urls"),
+    ),
+
+    path(
         "api/accounts/token/refresh/",
         TokenRefreshView.as_view(),
         name="token_refresh",
