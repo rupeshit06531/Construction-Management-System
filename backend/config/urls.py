@@ -22,4 +22,9 @@ urlpatterns = [
         "api/employees/",
         include("apps.employees.urls"),
     ),
+
+    path(
+        "api/tasks/",
+        include("apps.tasks.urls"),
+    ),
 ]
