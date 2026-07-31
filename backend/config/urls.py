@@ -27,4 +27,9 @@ urlpatterns = [
         "api/tasks/",
         include("apps.tasks.urls"),
     ),
+
+    path(
+        "api/materials/",
+        include("apps.materials.urls"),
+    ),
 ]
