@@ -263,11 +263,34 @@ SPECTACULAR_SETTINGS = {
 
     "COMPONENT_SPLIT_REQUEST": True,
 }
+
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
-    "AUTH_HEADER_TYPES": ("Bearer",),
+
+    "ACCESS_TOKEN_LIFETIME": timedelta(
+        minutes=30
+    ),
+
+    "REFRESH_TOKEN_LIFETIME": timedelta(
+        days=7
+    ),
+
+    "ROTATE_REFRESH_TOKENS": True,
+
+    "BLACKLIST_AFTER_ROTATION": True,
+
+    "AUTH_HEADER_TYPES": (
+        "Bearer",
+    ),
 }
+
+# Security Settings
+
+SECURE_BROWSER_XSS_FILTER = True
+
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+X_FRAME_OPTIONS = "DENY"
+
 
 CORS_ALLOW_ALL_ORIGINS = os.getenv(
     "CORS_ALLOW_ALL_ORIGINS",
@@ -287,3 +310,10 @@ from config.logging import LOGGING
 import logging.config
 
 logging.config.dictConfig(LOGGING)
+
+SECURE_SSL_REDIRECT = False
+
+SESSION_COOKIE_SECURE = False
+
+CSRF_COOKIE_SECURE = False
+
