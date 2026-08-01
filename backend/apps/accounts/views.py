@@ -7,7 +7,10 @@ from rest_framework.views import APIView
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import (
+    extend_schema,
+    OpenApiResponse,
+)
 
 from .serializers import (
     RegisterSerializer,
@@ -20,6 +23,14 @@ from .serializers import (
     tags=["Accounts"],
     summary="Register new user",
     description="Create a new user account in the system.",
+    responses={
+        201: OpenApiResponse(
+            description="User registered successfully."
+        ),
+        400: OpenApiResponse(
+            description="Validation error."
+        ),
+    },
 )
 class RegisterAPIView(APIView):
     permission_classes = [AllowAny]
@@ -50,6 +61,14 @@ class RegisterAPIView(APIView):
     tags=["Accounts"],
     summary="User login",
     description="Authenticate user using email and password and return JWT tokens.",
+    responses={
+        200: OpenApiResponse(
+            description="Login successful. Returns JWT access and refresh tokens."
+        ),
+        401: OpenApiResponse(
+            description="Invalid email or password."
+        ),
+    },
 )
 class LoginAPIView(APIView):
     permission_classes = [AllowAny]
