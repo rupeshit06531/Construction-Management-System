@@ -279,3 +279,11 @@ CSRF_TRUSTED_ORIGINS = os.getenv(
     "CSRF_TRUSTED_ORIGINS",
     ""
 ).split(",")
+
+LOGGING_CONFIG = None
+
+from config.logging import LOGGING
+
+import logging.config
+
+logging.config.dictConfig(LOGGING)
