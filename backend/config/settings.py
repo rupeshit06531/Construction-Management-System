@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 
     # Third Party Apps
     "rest_framework",
+    "drf_spectacular",
     "rest_framework_simplejwt.token_blacklist",
     "corsheaders",
 
@@ -56,6 +57,7 @@ INSTALLED_APPS = [
     "apps.expenses",
     "apps.payroll",
     "apps.reports",
+    "apps.dashboard",
 ]
 
 MIDDLEWARE = [
@@ -141,14 +143,93 @@ AUTH_USER_MODEL = "accounts.User"
 from datetime import timedelta
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": (
+
+    "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
+
+    "DEFAULT_SCHEMA_CLASS": (
+        "drf_spectacular.openapi.AutoSchema"
     ),
-    "DEFAULT_PERMISSION_CLASSES": (
+
+    "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
+    ],
+
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend",
+    ],
+
+    "DEFAULT_PAGINATION_CLASS": (
+        "apps.common.pagination.StandardResultsSetPagination"
+    ),
+
+    "PAGE_SIZE": 20,
+
+    "EXCEPTION_HANDLER": (
+        "apps.common.exceptions.custom_exception_handler"
     ),
 }
 
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Construction Management System API",
+    "DESCRIPTION": (
+        "Enterprise Construction Management System API Documentation"
+    ),
+    "VERSION": "1.0.0",
+
+    "SERVE_INCLUDE_SCHEMA": False,
+
+    "TAGS": [
+        {
+            "name": "Accounts",
+            "description": "User authentication and profile management APIs",
+        },
+        {
+            "name": "Projects",
+            "description": "Construction project management APIs",
+        },
+        {
+            "name": "Employees",
+            "description": "Employee management APIs",
+        },
+        {
+            "name": "Tasks",
+            "description": "Project task management APIs",
+        },
+        {
+            "name": "Materials",
+            "description": "Material management APIs",
+        },
+        {
+            "name": "Inventory",
+            "description": "Inventory tracking APIs",
+        },
+        {
+            "name": "Attendance",
+            "description": "Employee attendance APIs",
+        },
+        {
+            "name": "Expenses",
+            "description": "Project expense management APIs",
+        },
+        {
+            "name": "Payroll",
+            "description": "Employee payroll APIs",
+        },
+        {
+            "name": "Reports",
+            "description": "System reports APIs",
+        },
+        {
+            "name": "Dashboard",
+            "description": "Dashboard analytics APIs",
+        },
+    ],
+
+    "COMPONENT_SPLIT_REQUEST": True,
+}
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),

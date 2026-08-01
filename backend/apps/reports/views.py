@@ -1,20 +1,34 @@
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from apps.projects.models import Project
+from apps.accounts.permissions import IsAdminManagerEngineer
+from apps.common.mixins import RolePermissionMixin
 from apps.employees.models import Employee
 from apps.expenses.models import Expense
 from apps.payroll.models import Payroll
+from apps.projects.models import Project
 
 from .serializers import ReportSerializer
+from drf_spectacular.utils import extend_schema
 
 
-class DashboardReportAPIView(APIView):
+@extend_schema(
+    tags=["Reports"],
+    summary="Dashboard report",
+    description=(
+        "Returns summary report data including projects, "
+        "employees, expenses and payroll statistics."
+    ),
+    responses=ReportSerializer(many=True),
+)
+class DashboardReportAPIView(
+    RolePermissionMixin,
+    APIView,
+):
 
-    permission_classes = [
-        IsAuthenticated,
-    ]
+    role_permissions = {
+        "GET": IsAdminManagerEngineer,
+    }
 
     def get(self, request):
 
@@ -47,6 +61,4 @@ class DashboardReportAPIView(APIView):
             many=True,
         )
 
-        return Response(
-            serializer.data
-        )
+        return Response(serializer.data)

@@ -7,6 +7,8 @@ from rest_framework.views import APIView
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from drf_spectacular.utils import extend_schema
+
 from .serializers import (
     RegisterSerializer,
     LoginSerializer,
@@ -14,7 +16,11 @@ from .serializers import (
     PasswordChangeSerializer,
 )
 
-
+@extend_schema(
+    tags=["Accounts"],
+    summary="Register new user",
+    description="Create a new user account in the system.",
+)
 class RegisterAPIView(APIView):
     permission_classes = [AllowAny]
 
@@ -40,6 +46,11 @@ class RegisterAPIView(APIView):
         )
 
 
+@extend_schema(
+    tags=["Accounts"],
+    summary="User login",
+    description="Authenticate user using email and password and return JWT tokens.",
+)
 class LoginAPIView(APIView):
     permission_classes = [AllowAny]
 
@@ -88,6 +99,11 @@ class LoginAPIView(APIView):
             status=status.HTTP_200_OK
         )
 
+@extend_schema(
+    tags=["Accounts"],
+    summary="Get current user",
+    description="Returns authenticated user's information.",
+)
 class CurrentUserAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -104,6 +120,11 @@ class CurrentUserAPIView(APIView):
         )
     
 
+@extend_schema(
+    tags=["Accounts"],
+    summary="Change password",
+    description="Change password for authenticated user.",
+)
 class PasswordChangeAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
