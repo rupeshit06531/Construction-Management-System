@@ -11,21 +11,34 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+import os
+
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(BASE_DIR / ".env")
+
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-j*t*m$*5m5534_(!0z7q(9t2_1kwi$n+86-$xyxav2(a_2e$aw'
-
+SECRET_KEY = os.getenv(
+    "SECRET_KEY"
+)
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv(
+    "DEBUG",
+    "False"
+).lower() == "true"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv(
+    "ALLOWED_HOSTS",
+    ""
+).split(",")
 
 
 # Application definition
@@ -63,12 +76,15 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+
+    'corsheaders.middleware.CorsMiddleware',
+
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -95,9 +111,14 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": os.getenv(
+            "DB_ENGINE"
+        ),
+        "NAME": BASE_DIR / os.getenv(
+            "DB_NAME",
+            "db.sqlite3"
+        ),
     }
 }
 
@@ -124,13 +145,25 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = os.getenv(
+    "LANGUAGE_CODE",
+    "en-us"
+)
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = os.getenv(
+    "TIME_ZONE",
+    "UTC"
+)
 
-USE_I18N = True
+USE_I18N = os.getenv(
+    "USE_I18N",
+    "True"
+).lower() == "true"
 
-USE_TZ = True
+USE_TZ = os.getenv(
+    "USE_TZ",
+    "True"
+).lower() == "true"
 
 
 # Static files (CSS, JavaScript, Images)
@@ -235,3 +268,14 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
+
+CORS_ALLOW_ALL_ORIGINS = os.getenv(
+    "CORS_ALLOW_ALL_ORIGINS",
+    "False"
+).lower() == "true"
+
+
+CSRF_TRUSTED_ORIGINS = os.getenv(
+    "CSRF_TRUSTED_ORIGINS",
+    ""
+).split(",")
