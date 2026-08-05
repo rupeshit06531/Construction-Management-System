@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
 from .models import Task
@@ -11,7 +12,6 @@ class TaskSerializer(serializers.ModelSerializer):
     )
 
     assigned_employee_name = serializers.SerializerMethodField()
-
 
     class Meta:
         model = Task
@@ -38,7 +38,11 @@ class TaskSerializer(serializers.ModelSerializer):
             "updated_at",
         ]
 
-
+    @extend_schema_field(
+        serializers.CharField(
+            allow_null=True
+        )
+    )
     def get_assigned_employee_name(self, obj):
 
         if obj.assigned_to:
