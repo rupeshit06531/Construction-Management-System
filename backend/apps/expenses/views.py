@@ -1,6 +1,7 @@
-from rest_framework.viewsets import ModelViewSet
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import SearchFilter, OrderingFilter
+from drf_spectacular.utils import extend_schema
+from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.viewsets import ModelViewSet
 
 from apps.accounts.permissions import (
     IsAdminManagerEngineer,
@@ -11,7 +12,6 @@ from apps.common.mixins import RolePermissionMixin
 
 from .models import Expense
 from .serializers import ExpenseSerializer
-from drf_spectacular.utils import extend_schema
 
 
 @extend_schema(
@@ -27,9 +27,9 @@ class ExpenseViewSet(
     ModelViewSet,
 ):
 
-    queryset = Expense.objects.all().order_by(
-        "-created_at"
-    )
+    queryset = Expense.objects.select_related(
+        "project",
+    ).all()
 
     serializer_class = ExpenseSerializer
 
@@ -54,6 +54,7 @@ class ExpenseViewSet(
     ordering_fields = [
         "created_at",
         "amount",
+        "expense_date",
     ]
 
     ordering = [
