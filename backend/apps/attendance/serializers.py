@@ -9,7 +9,6 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Attendance
-
         fields = [
             "id",
             "employee",
@@ -22,17 +21,12 @@ class AttendanceSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
-
         read_only_fields = [
+            "id",
+            "employee_name",
             "created_at",
             "updated_at",
         ]
 
-    def get_employee_name(
-        self,
-        obj,
-    ) -> str:
-        return (
-            f"{obj.employee.first_name} "
-            f"{obj.employee.last_name}"
-        )
+    def get_employee_name(self, obj):
+        return str(obj.employee)
