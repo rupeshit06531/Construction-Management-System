@@ -26,5 +26,11 @@ class PayrollSerializer(serializers.ModelSerializer):
             "updated_at",
         ]
 
-    def get_employee_name(self, obj):
-        return f"{obj.employee.first_name} {obj.employee.last_name}"
+    def get_employee_name(
+        self,
+        obj,
+    ) -> str:
+        return (
+            f"{obj.employee.first_name} "
+            f"{obj.employee.last_name}"
+        )
