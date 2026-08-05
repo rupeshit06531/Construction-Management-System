@@ -7,7 +7,6 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
     employee_name = serializers.SerializerMethodField()
 
-
     class Meta:
         model = Attendance
 
@@ -29,8 +28,10 @@ class AttendanceSerializer(serializers.ModelSerializer):
             "updated_at",
         ]
 
-
-    def get_employee_name(self, obj):
+    def get_employee_name(
+        self,
+        obj,
+    ) -> str:
         return (
             f"{obj.employee.first_name} "
             f"{obj.employee.last_name}"
