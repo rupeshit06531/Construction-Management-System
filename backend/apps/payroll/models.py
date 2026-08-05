@@ -9,7 +9,6 @@ class Payroll(models.Model):
         PENDING = "PENDING", "Pending"
         PAID = "PAID", "Paid"
 
-
     employee = models.ForeignKey(
         Employee,
         on_delete=models.CASCADE,
@@ -64,6 +63,14 @@ class Payroll(models.Model):
         auto_now=True,
     )
 
+    class Meta:
+        ordering = ["-month", "-created_at"]
+        indexes = [
+            models.Index(fields=["employee"]),
+            models.Index(fields=["month"]),
+            models.Index(fields=["status"]),
+            models.Index(fields=["employee", "month"]),
+        ]
 
     def __str__(self):
         return f"{self.employee} - {self.month}"
