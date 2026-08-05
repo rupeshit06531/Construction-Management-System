@@ -12,7 +12,6 @@ class MaterialSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Material
-
         fields = [
             "id",
             "project",
@@ -26,8 +25,9 @@ class MaterialSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
-
         read_only_fields = [
+            "id",
+            "project_name",
             "created_at",
             "updated_at",
         ]

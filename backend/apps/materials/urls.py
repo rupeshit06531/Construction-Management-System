@@ -1,8 +1,8 @@
 from django.urls import path
 
 from .views import (
-    MaterialListCreateAPIView,
     MaterialDetailAPIView,
+    MaterialListCreateAPIView,
 )
 
 
@@ -12,7 +12,6 @@ urlpatterns = [
         MaterialListCreateAPIView.as_view(),
         name="material-list-create",
     ),
-
     path(
         "<int:pk>/",
         MaterialDetailAPIView.as_view(),
