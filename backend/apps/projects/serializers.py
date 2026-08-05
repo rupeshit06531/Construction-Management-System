@@ -31,7 +31,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             "manager_name",
         ]
 
-    def get_manager_name(self, obj):
+    def get_manager_name(self, obj) -> str:
         return obj.manager.get_full_name() or obj.manager.username
 
     def validate_code(self, value):
