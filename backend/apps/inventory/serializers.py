@@ -12,7 +12,6 @@ class InventorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Inventory
-
         fields = [
             "id",
             "material",
@@ -23,8 +22,9 @@ class InventorySerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
-
         read_only_fields = [
+            "id",
+            "material_name",
             "created_at",
             "updated_at",
         ]

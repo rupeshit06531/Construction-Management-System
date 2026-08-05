@@ -1,8 +1,8 @@
 from django.urls import path
 
 from .views import (
-    InventoryListCreateAPIView,
     InventoryDetailAPIView,
+    InventoryListCreateAPIView,
 )
 
 
@@ -12,7 +12,6 @@ urlpatterns = [
         InventoryListCreateAPIView.as_view(),
         name="inventory-list-create",
     ),
-
     path(
         "<int:pk>/",
         InventoryDetailAPIView.as_view(),
