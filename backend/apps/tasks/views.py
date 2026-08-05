@@ -9,8 +9,7 @@ class TaskListCreateAPIView(generics.ListCreateAPIView):
     queryset = Task.objects.select_related(
         "project",
         "assigned_to",
-        "assigned_to__user",
-    ).all()
+    ).order_by("-created_at")
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated]
 
@@ -19,7 +18,6 @@ class TaskDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Task.objects.select_related(
         "project",
         "assigned_to",
-        "assigned_to__user",
     ).all()
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated]

@@ -10,10 +10,7 @@ class TaskSerializer(serializers.ModelSerializer):
         read_only=True,
     )
 
-    assigned_to_name = serializers.CharField(
-        source="assigned_to.user.get_full_name",
-        read_only=True,
-    )
+    assigned_to_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Task
@@ -40,3 +37,9 @@ class TaskSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
+
+    def get_assigned_to_name(self, obj):
+        if not obj.assigned_to:
+            return None
+
+        return str(obj.assigned_to)
