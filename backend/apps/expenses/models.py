@@ -12,7 +12,6 @@ class Expense(models.Model):
         TRANSPORT = "TRANSPORT", "Transport"
         OTHER = "OTHER", "Other"
 
-
     project = models.ForeignKey(
         Project,
         on_delete=models.CASCADE,
@@ -48,6 +47,13 @@ class Expense(models.Model):
         auto_now=True,
     )
 
+    class Meta:
+        ordering = ["-expense_date", "-created_at"]
+        indexes = [
+            models.Index(fields=["project"]),
+            models.Index(fields=["category"]),
+            models.Index(fields=["expense_date"]),
+        ]
 
     def __str__(self):
         return self.title
