@@ -1,6 +1,7 @@
-from rest_framework.viewsets import ModelViewSet
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import SearchFilter, OrderingFilter
+from drf_spectacular.utils import extend_schema
+from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.viewsets import ModelViewSet
 
 from apps.accounts.permissions import (
     IsAdminManagerEngineer,
@@ -11,7 +12,6 @@ from apps.common.mixins import RolePermissionMixin
 
 from .models import Payroll
 from .serializers import PayrollSerializer
-from drf_spectacular.utils import extend_schema
 
 
 @extend_schema(
@@ -27,9 +27,9 @@ class PayrollViewSet(
     ModelViewSet,
 ):
 
-    queryset = Payroll.objects.all().order_by(
-        "-created_at"
-    )
+    queryset = Payroll.objects.select_related(
+        "employee",
+    ).all()
 
     serializer_class = PayrollSerializer
 
@@ -48,15 +48,20 @@ class PayrollViewSet(
     filterset_fields = [
         "employee",
         "month",
+        "status",
     ]
 
     ordering_fields = [
         "created_at",
+        "month",
+        "basic_salary",
+        "bonus",
+        "deduction",
         "net_salary",
-        "gross_salary",
     ]
 
     ordering = [
+        "-month",
         "-created_at",
     ]
 
