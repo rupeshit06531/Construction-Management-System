@@ -7,22 +7,24 @@ class TaskSerializer(serializers.ModelSerializer):
 
     project_name = serializers.CharField(
         source="project.name",
-        read_only=True
+        read_only=True,
     )
 
-    assigned_employee_name = serializers.SerializerMethodField()
+    assigned_to_name = serializers.CharField(
+        source="assigned_to.user.get_full_name",
+        read_only=True,
+    )
 
     class Meta:
         model = Task
-
         fields = [
             "id",
-            "title",
-            "description",
             "project",
             "project_name",
             "assigned_to",
-            "assigned_employee_name",
+            "assigned_to_name",
+            "title",
+            "description",
             "priority",
             "status",
             "start_date",
@@ -31,18 +33,10 @@ class TaskSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
-
         read_only_fields = [
+            "id",
+            "project_name",
+            "assigned_to_name",
             "created_at",
             "updated_at",
         ]
-
-    def get_assigned_employee_name(self, obj) -> str | None:
-
-        if obj.assigned_to:
-            return (
-                f"{obj.assigned_to.first_name} "
-                f"{obj.assigned_to.last_name}"
-            )
-
-        return None
