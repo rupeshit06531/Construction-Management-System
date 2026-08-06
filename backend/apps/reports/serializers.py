@@ -28,7 +28,10 @@ class ReportSerializer(serializers.ModelSerializer):
             "updated_at",
         ]
 
-    def get_generated_by_name(self, obj):
+    def get_generated_by_name(
+        self,
+        obj,
+    ) -> str | None:
         if not obj.generated_by:
             return None
 

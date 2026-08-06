@@ -28,5 +28,8 @@ class AttendanceSerializer(serializers.ModelSerializer):
             "updated_at",
         ]
 
-    def get_employee_name(self, obj):
+    def get_employee_name(
+        self,
+        obj,
+    ) -> str:
         return str(obj.employee)

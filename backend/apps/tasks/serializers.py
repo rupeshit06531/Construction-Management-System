@@ -38,7 +38,10 @@ class TaskSerializer(serializers.ModelSerializer):
             "updated_at",
         ]
 
-    def get_assigned_to_name(self, obj):
+    def get_assigned_to_name(
+        self,
+        obj,
+    ) -> str | None:
         if not obj.assigned_to:
             return None
 
