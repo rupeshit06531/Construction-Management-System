@@ -1,17 +1,17 @@
-from rest_framework import generics
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import SearchFilter, OrderingFilter
+from drf_spectacular.utils import extend_schema
+from rest_framework import generics
+from rest_framework.filters import OrderingFilter, SearchFilter
 
-from apps.accounts.permissions import (
-    IsAdminManagerEngineer,
-    IsAdminOrManager,
+from apps.common.mixins import RolePermissionMixin
+from apps.common.permissions import (
+    IsManagerOrAbove,
+    IsStaffUser,
     IsSuperAdmin,
 )
-from apps.common.mixins import RolePermissionMixin
 
 from .models import Employee
 from .serializers import EmployeeSerializer
-from drf_spectacular.utils import extend_schema
 
 
 @extend_schema(
@@ -60,8 +60,8 @@ class EmployeeListCreateAPIView(
     ]
 
     role_permissions = {
-        "GET": IsAdminManagerEngineer,
-        "POST": IsAdminOrManager,
+        "GET": IsStaffUser,
+        "POST": IsManagerOrAbove,
     }
 
 
@@ -82,8 +82,8 @@ class EmployeeDetailAPIView(
     serializer_class = EmployeeSerializer
 
     role_permissions = {
-        "GET": IsAdminManagerEngineer,
-        "PUT": IsAdminOrManager,
-        "PATCH": IsAdminOrManager,
+        "GET": IsStaffUser,
+        "PUT": IsManagerOrAbove,
+        "PATCH": IsManagerOrAbove,
         "DELETE": IsSuperAdmin,
     }
