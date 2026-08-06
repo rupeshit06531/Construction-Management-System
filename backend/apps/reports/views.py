@@ -1,5 +1,6 @@
+from django.db.models import Sum
+
 from rest_framework import generics, serializers
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -44,11 +45,11 @@ class DashboardReportAPIView(
     }
 
     def get(self, request):
-        total_expenses = sum(
-            Expense.objects.values_list(
-                "amount",
-                flat=True,
-            )
+        total_expenses = (
+            Expense.objects.aggregate(
+                total=Sum("amount"),
+            )["total"]
+            or 0
         )
 
         data = [
@@ -87,7 +88,7 @@ class ReportListCreateAPIView(
     generics.ListCreateAPIView,
 ):
     queryset = Report.objects.select_related(
-        "generated_by"
+        "generated_by",
     ).all()
 
     serializer_class = ReportSerializer
@@ -99,7 +100,7 @@ class ReportListCreateAPIView(
 
     def perform_create(self, serializer):
         serializer.save(
-            generated_by=self.request.user
+            generated_by=self.request.user,
         )
 
 
@@ -112,7 +113,7 @@ class ReportDetailAPIView(
     generics.RetrieveUpdateDestroyAPIView,
 ):
     queryset = Report.objects.select_related(
-        "generated_by"
+        "generated_by",
     ).all()
 
     serializer_class = ReportSerializer
