@@ -283,3 +283,87 @@ class ReportsAPITest(APITestCase):
             Report.objects.count(),
             0,
         )
+
+    def test_create_report_invalid_report_type(self):
+        self.authenticate(self.admin)
+
+        invalid_data = self.report_data.copy()
+        invalid_data["report_type"] = "INVALID"
+
+        response = self.client.post(
+            "/api/reports/",
+            invalid_data,
+            format="json",
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST,
+        )
+
+        self.assertIn(
+            "report_type",
+            response.data["errors"],
+        )
+
+        self.assertEqual(
+            Report.objects.count(),
+            0,
+        )
+
+    def test_create_report_missing_title(self):
+        self.authenticate(self.admin)
+
+        invalid_data = self.report_data.copy()
+        invalid_data.pop("title")
+
+        response = self.client.post(
+            "/api/reports/",
+            invalid_data,
+            format="json",
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST,
+        )
+
+        self.assertIn(
+            "title",
+            response.data["errors"],
+        )
+
+        self.assertEqual(
+            Report.objects.count(),
+            0,
+        )
+
+    def test_create_report_missing_report_type(self):
+        self.authenticate(self.admin)
+
+        invalid_data = self.report_data.copy()
+        invalid_data.pop("report_type")
+
+        response = self.client.post(
+            "/api/reports/",
+            invalid_data,
+            format="json",
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST,
+        )
+
+        self.assertIn(
+            "report_type",
+            response.data["errors"],
+        )
+
+        self.assertEqual(
+            Report.objects.count(),
+            0,
+        )
+
+
+        
