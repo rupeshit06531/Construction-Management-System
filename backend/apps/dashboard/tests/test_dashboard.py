@@ -165,6 +165,157 @@ class DashboardAPITest(APITestCase):
             [],
         )
 
+    def test_monthly_payroll(self):
+        response = self.client.get(
+            "/api/dashboard/monthly-payroll/"
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+        )
+
+        self.assertIsInstance(
+            response.data,
+            list,
+        )
+
+    def test_monthly_payroll_aggregation(self):
+        from decimal import Decimal
+
+        from apps.employees.models import Employee
+        from apps.payroll.models import Payroll
+
+        employee = Employee.objects.create(
+            first_name="Payroll",
+            last_name="Dashboard Employee",
+            employee_type="WORKER",
+            phone="9876543210",
+            email="payroll.dashboard@test.com",
+            joining_date="2026-08-01",
+            salary=Decimal("25000.00"),
+        )
+
+        Payroll.objects.create(
+            employee=employee,
+            month="2026-08-01",
+            basic_salary=Decimal("25000.00"),
+            bonus=Decimal("2000.00"),
+            deduction=Decimal("1000.00"),
+            net_salary=Decimal("26000.00"),
+            status="PENDING",
+        )
+
+        Payroll.objects.create(
+            employee=employee,
+            month="2026-08-01",
+            basic_salary=Decimal("30000.00"),
+            bonus=Decimal("3000.00"),
+            deduction=Decimal("1000.00"),
+            net_salary=Decimal("32000.00"),
+            status="PENDING",
+        )
+
+        response = self.client.get(
+            "/api/dashboard/monthly-payroll/"
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+        )
+
+        self.assertEqual(
+            len(response.data),
+            1,
+        )
+
+        self.assertEqual(
+            response.data[0]["month"],
+            "2026-08",
+        )
+
+        self.assertEqual(
+            response.data[0]["total_payroll"],
+            "58000.00",
+        )
+
+
+    def test_monthly_payroll(self):
+        response = self.client.get(
+            "/api/dashboard/monthly-payroll/"
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+        )
+
+        self.assertIsInstance(
+            response.data,
+            list,
+        )
+
+    def test_monthly_payroll_aggregation(self):
+        from decimal import Decimal
+
+        from apps.employees.models import Employee
+        from apps.payroll.models import Payroll
+
+        employee = Employee.objects.create(
+        first_name="Payroll",
+        last_name="Dashboard Employee",
+        employee_type="WORKER",
+        phone="9876543210",
+        email="payroll.dashboard@test.com",
+        joining_date="2026-08-01",
+        salary="25000.00",
+    )
+
+        Payroll.objects.create(
+            employee=employee,
+            month="2026-08-01",
+            basic_salary=Decimal("25000.00"),
+            bonus=Decimal("2000.00"),
+            deduction=Decimal("1000.00"),
+            net_salary=Decimal("26000.00"),
+            status="PENDING",
+        )
+
+        Payroll.objects.create(
+            employee=employee,
+            month="2026-08-01",
+            basic_salary=Decimal("30000.00"),
+            bonus=Decimal("3000.00"),
+            deduction=Decimal("1000.00"),
+            net_salary=Decimal("32000.00"),
+            status="PENDING",
+        )
+
+        response = self.client.get(
+            "/api/dashboard/monthly-payroll/"
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+        )
+
+        self.assertEqual(
+            len(response.data),
+            1,
+        )
+
+        self.assertEqual(
+            response.data[0]["month"],
+            "2026-08",
+        )
+
+        self.assertEqual(
+            response.data[0]["total_payroll"],
+            "58000.00",
+        )
+
     def test_monthly_expenses_aggregation(self):
         Expense.objects.create(
             project=self.project,
