@@ -8,15 +8,39 @@ from apps.reports.models import Report
 class ReportsAPITest(APITestCase):
 
     def setUp(self):
-        self.user = User.objects.create_user(
+        self.admin = User.objects.create_user(
             username="admin",
             email="admin@test.com",
             password="password123",
             role="ADMIN",
         )
 
-        self.client.force_authenticate(
-            user=self.user
+        self.super_admin = User.objects.create_user(
+            username="superadmin",
+            email="superadmin@test.com",
+            password="password123",
+            role="SUPER_ADMIN",
+        )
+
+        self.manager = User.objects.create_user(
+            username="manager",
+            email="manager@test.com",
+            password="password123",
+            role="MANAGER",
+        )
+
+        self.engineer = User.objects.create_user(
+            username="engineer",
+            email="engineer@test.com",
+            password="password123",
+            role="ENGINEER",
+        )
+
+        self.customer = User.objects.create_user(
+            username="customer",
+            email="customer@test.com",
+            password="password123",
+            role="CUSTOMER",
         )
 
         self.report_data = {
@@ -32,6 +56,11 @@ class ReportsAPITest(APITestCase):
             },
         }
 
+    def authenticate(self, user):
+        self.client.force_authenticate(
+            user=user,
+        )
+
     def create_report(self):
         return self.client.post(
             "/api/reports/",
@@ -39,9 +68,11 @@ class ReportsAPITest(APITestCase):
             format="json",
         )
 
-    def test_dashboard_report(self):
+    def test_dashboard_report_admin(self):
+        self.authenticate(self.admin)
+
         response = self.client.get(
-            "/api/reports/dashboard/"
+            "/api/reports/dashboard/",
         )
 
         self.assertEqual(
@@ -55,6 +86,8 @@ class ReportsAPITest(APITestCase):
         )
 
     def test_create_report(self):
+        self.authenticate(self.admin)
+
         response = self.create_report()
 
         self.assertEqual(
@@ -74,20 +107,22 @@ class ReportsAPITest(APITestCase):
 
         self.assertEqual(
             response.data["generated_by"],
-            self.user.id,
+            self.admin.id,
         )
 
         self.assertTrue(
             Report.objects.filter(
-                id=response.data["id"]
-            ).exists()
+                id=response.data["id"],
+            ).exists(),
         )
 
     def test_list_reports(self):
+        self.authenticate(self.admin)
+
         self.create_report()
 
         response = self.client.get(
-            "/api/reports/"
+            "/api/reports/",
         )
 
         self.assertEqual(
@@ -106,12 +141,14 @@ class ReportsAPITest(APITestCase):
         )
 
     def test_retrieve_report(self):
+        self.authenticate(self.admin)
+
         create_response = self.create_report()
 
         report_id = create_response.data["id"]
 
         response = self.client.get(
-            f"/api/reports/{report_id}/"
+            f"/api/reports/{report_id}/",
         )
 
         self.assertEqual(
@@ -130,6 +167,8 @@ class ReportsAPITest(APITestCase):
         )
 
     def test_update_report(self):
+        self.authenticate(self.admin)
+
         create_response = self.create_report()
 
         report_id = create_response.data["id"]
@@ -161,12 +200,14 @@ class ReportsAPITest(APITestCase):
         )
 
     def test_delete_report(self):
+        self.authenticate(self.admin)
+
         create_response = self.create_report()
 
         report_id = create_response.data["id"]
 
         response = self.client.delete(
-            f"/api/reports/{report_id}/"
+            f"/api/reports/{report_id}/",
         )
 
         self.assertEqual(
@@ -176,6 +217,69 @@ class ReportsAPITest(APITestCase):
 
         self.assertFalse(
             Report.objects.filter(
-                id=report_id
-            ).exists()
+                id=report_id,
+            ).exists(),
+        )
+
+    def test_super_admin_can_access_reports(self):
+        self.authenticate(self.super_admin)
+
+        response = self.client.get(
+            "/api/reports/",
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+        )
+
+    def test_manager_can_access_reports(self):
+        self.authenticate(self.manager)
+
+        response = self.client.get(
+            "/api/reports/",
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+        )
+
+    def test_engineer_can_access_reports(self):
+        self.authenticate(self.engineer)
+
+        response = self.client.get(
+            "/api/reports/",
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+        )
+
+    def test_customer_cannot_access_reports(self):
+        self.authenticate(self.customer)
+
+        response = self.client.get(
+            "/api/reports/",
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_403_FORBIDDEN,
+        )
+
+    def test_customer_cannot_create_report(self):
+        self.authenticate(self.customer)
+
+        response = self.create_report()
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_403_FORBIDDEN,
+        )
+
+        self.assertEqual(
+            Report.objects.count(),
+            0,
         )
