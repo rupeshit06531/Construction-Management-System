@@ -20,7 +20,7 @@ class InventoryAPITest(APITestCase):
             username="inventory_manager",
             email="inventory@test.com",
             password="password123",
-            role="MANAGER",
+            role="SUPER_ADMIN",
         )
 
         response = self.client.post(
