@@ -19,7 +19,7 @@ class AttendanceAPITest(APITestCase):
             username="attendance_manager",
             email="attendance@test.com",
             password="password123",
-            role="MANAGER",
+            role="SUPER_ADMIN",
         )
 
         response = self.client.post(
