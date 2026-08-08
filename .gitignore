@@ -1,5 +1,17 @@
-# Backend
-backend/
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Django
+*.sqlite3
+media/
+staticfiles/
+
+# Python virtual environment
+venv/
+.venv/
 
 # Frontend dependencies
 frontend/node_modules/
@@ -9,6 +21,8 @@ frontend/dist/
 frontend/dist-ssr/
 
 # Environment files
+.env
+*.env
 frontend/.env
 frontend/.env.*
 
