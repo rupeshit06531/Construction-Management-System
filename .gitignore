@@ -6,7 +6,8 @@ __pycache__/
 
 # Django
 *.sqlite3
-db.sqlite3
+
+# Media / Static
 media/
 staticfiles/
 
@@ -18,17 +19,17 @@ venv/
 .env
 *.env
 !.env.example
-frontend/.env
-frontend/.env.*
+!backend/.env.example
 
-# Logs
-*.log
-backend/logs/
-
-# Frontend
+# Frontend dependencies
 frontend/node_modules/
+
+# Frontend build
 frontend/dist/
 frontend/dist-ssr/
+
+# Backend logs
+backend/logs/
 
 # Editor
 .vscode/
