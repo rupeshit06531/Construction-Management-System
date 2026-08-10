@@ -144,6 +144,7 @@ class LoginAPIView(APIView):
     description="Returns authenticated user's information.",
     responses={
         200: OpenApiResponse(
+            response=UserSerializer,
             description="Authenticated user information.",
         ),
         401: OpenApiResponse(
@@ -158,18 +159,8 @@ class CurrentUserAPIView(APIView):
     def get(self, request):
 
         return Response(
-            {
-                "is_authenticated": (
-                    request.user.is_authenticated
-                ),
-                "user": str(request.user),
-                "auth": str(request.auth),
-                "headers": {
-                    "Authorization": request.headers.get(
-                        "Authorization"
-                    ),
-                },
-            }
+            UserSerializer(request.user).data,
+            status=status.HTTP_200_OK,
         )
 
 
