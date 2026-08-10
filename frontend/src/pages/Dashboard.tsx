@@ -1,71 +1,60 @@
 import { useEffect, useState } from 'react'
 
 import DashboardLayout from '../components/layout/DashboardLayout'
-import { getProjects } from '../api/projects'
-
-
-interface Project {
-  id: number
-  status: string
-  budget: string
-}
+import {
+  DashboardKPI,
+  getDashboardKPI,
+} from '../api/dashboard'
 
 
 function Dashboard() {
 
-  const [projects, setProjects] =
-    useState<Project[]>([])
+  const [kpi, setKpi] =
+    useState<DashboardKPI | null>(null)
+
+  const [loading, setLoading] =
+    useState(true)
+
+  const [error, setError] =
+    useState('')
 
 
   useEffect(() => {
 
-    const loadProjects = async () => {
+    const loadDashboard = async () => {
+
       try {
 
-        const data = await getProjects()
+        setLoading(true)
+        setError('')
 
-        setProjects(data)
+        const data =
+          await getDashboardKPI()
+
+        setKpi(data)
 
       } catch (error) {
 
         console.error(
-          'Failed to load projects',
+          'Failed to load dashboard',
           error,
         )
+
+        setError(
+          'Unable to load dashboard data.',
+        )
+
+      } finally {
+
+        setLoading(false)
 
       }
     }
 
 
-    loadProjects()
+    loadDashboard()
 
   }, [])
-
-
-  const totalProjects =
-    projects.length
-
-
-  const activeProjects =
-    projects.filter(
-      (project) =>
-        project.status === 'ACTIVE',
-    ).length
-
-
-  const completedProjects =
-    projects.filter(
-      (project) =>
-        project.status === 'COMPLETED',
-    ).length
-
-
-  const totalBudget =
-    projects.reduce(
-      (sum, project) =>
-        sum + Number(project.budget || 0),
-      0,
-    )
 
 
   return (
@@ -76,6 +65,7 @@ function Dashboard() {
         <div className="page-header">
 
           <div>
+
             <h1>
               Dashboard
             </h1>
@@ -83,70 +73,131 @@ function Dashboard() {
             <p>
               Overview of your construction management system.
             </p>
+
           </div>
 
         </div>
 
 
-        <div className="dashboard-grid">
+        {loading && (
+
+          <p>
+            Loading dashboard...
+          </p>
+
+        )}
 
 
-          <div className="dashboard-card">
+        {!loading && error && (
 
-            <span>
-              Total Projects
-            </span>
+          <p>
+            {error}
+          </p>
 
-            <strong>
-              {totalProjects}
-            </strong>
+        )}
+
+
+        {!loading && !error && kpi && (
+
+          <div className="dashboard-grid">
+
+            <div className="dashboard-card">
+
+              <span>
+                Total Projects
+              </span>
+
+              <strong>
+                {kpi.total_projects}
+              </strong>
+
+            </div>
+
+
+            <div className="dashboard-card">
+
+              <span>
+                Total Employees
+              </span>
+
+              <strong>
+                {kpi.total_employees}
+              </strong>
+
+            </div>
+
+
+            <div className="dashboard-card">
+
+              <span>
+                Total Tasks
+              </span>
+
+              <strong>
+                {kpi.total_tasks}
+              </strong>
+
+            </div>
+
+
+            <div className="dashboard-card">
+
+              <span>
+                Total Materials
+              </span>
+
+              <strong>
+                {kpi.total_materials}
+              </strong>
+
+            </div>
+
+
+            <div className="dashboard-card">
+
+              <span>
+                Inventory Items
+              </span>
+
+              <strong>
+                {kpi.total_inventory_items}
+              </strong>
+
+            </div>
+
+
+            <div className="dashboard-card">
+
+              <span>
+                Total Expenses
+              </span>
+
+              <strong>
+                ₹{Number(
+                  kpi.total_expenses || 0,
+                ).toLocaleString('en-IN')}
+              </strong>
+
+            </div>
+
+
+            <div className="dashboard-card">
+
+              <span>
+                Total Payroll
+              </span>
+
+              <strong>
+                ₹{Number(
+                  kpi.total_payroll || 0,
+                ).toLocaleString('en-IN')}
+              </strong>
+
+            </div>
 
           </div>
 
-
-
-          <div className="dashboard-card">
-
-            <span>
-              Active Projects
-            </span>
-
-            <strong>
-              {activeProjects}
-            </strong>
-
-          </div>
-
-
-
-          <div className="dashboard-card">
-
-            <span>
-              Completed Projects
-            </span>
-
-            <strong>
-              {completedProjects}
-            </strong>
-
-          </div>
-
-
-
-          <div className="dashboard-card">
-
-            <span>
-              Total Budget
-            </span>
-
-            <strong>
-              ₹{totalBudget.toLocaleString()}
-            </strong>
-
-          </div>
-
-
-        </div>
+        )}
 
       </section>
 
