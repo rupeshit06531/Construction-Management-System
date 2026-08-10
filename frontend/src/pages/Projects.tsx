@@ -21,16 +21,56 @@ function Projects() {
     useState(true)
 
 
+  const [error, setError] =
+    useState('')
+
+
+  const [page, setPage] =
+    useState(1)
+
+
+  const [pageSize] =
+    useState(20)
+
+
+  const [totalProjects, setTotalProjects] =
+    useState(0)
+
+
+  const [hasNextPage, setHasNextPage] =
+    useState(false)
+
+
+  const [hasPreviousPage, setHasPreviousPage] =
+    useState(false)
+
+
   useEffect(() => {
 
     const loadProjects = async () => {
 
       try {
 
-        const data =
-          await getProjects()
+        setLoading(true)
+        setError('')
 
-        setProjects(data)
+        const data =
+          await getProjects(
+            page,
+            pageSize,
+          )
+
+        setProjects(data.results)
+
+        setTotalProjects(data.count)
+
+        setHasNextPage(
+          Boolean(data.next),
+        )
+
+        setHasPreviousPage(
+          Boolean(data.previous),
+        )
 
       } catch (error) {
 
@@ -38,6 +78,12 @@ function Projects() {
           'Failed to load projects',
           error,
         )
+
+        setError(
+          'Unable to load projects.',
+        )
+
+        setProjects([])
 
       } finally {
 
@@ -50,7 +96,16 @@ function Projects() {
 
     loadProjects()
 
-  }, [])
+  }, [
+    page,
+    pageSize,
+  ])
+
+
+  const totalPages =
+    Math.ceil(
+      totalProjects / pageSize,
+    )
 
 
   return (
@@ -81,6 +136,12 @@ function Projects() {
             Loading projects...
           </p>
 
+        ) : error ? (
+
+          <p>
+            {error}
+          </p>
+
         ) : (
 
           <div>
@@ -93,92 +154,155 @@ function Projects() {
 
             ) : (
 
-              <table
-                style={{
-                  width: '100%',
-                  background: '#ffffff',
-                  borderRadius: '8px',
-                }}
-              >
+              <>
 
-                <thead>
+                <table
+                  style={{
+                    width: '100%',
+                    background: '#ffffff',
+                    borderRadius: '8px',
+                  }}
+                >
 
-                  <tr>
+                  <thead>
 
-                    <th>
-                      Name
-                    </th>
+                    <tr>
 
-                    <th>
-                      Code
-                    </th>
+                      <th>
+                        Name
+                      </th>
 
-                    <th>
-                      Client
-                    </th>
+                      <th>
+                        Code
+                      </th>
 
-                    <th>
-                      Status
-                    </th>
+                      <th>
+                        Client
+                      </th>
 
-                    <th>
-                      Budget
-                    </th>
+                      <th>
+                        Status
+                      </th>
 
-                  </tr>
+                      <th>
+                        Budget
+                      </th>
 
-                </thead>
+                    </tr>
 
-
-                <tbody>
-
-                  {projects.map(
-                    (project) => (
-
-                      <tr
-                        key={project.id}
-                        onClick={() =>
-                          navigate(
-                            `/projects/${project.id}`,
-                          )
-                        }
-                        style={{
-                          cursor: 'pointer',
-                        }}
-                      >
-
-                        <td>
-                          {project.name}
-                        </td>
-
-                        <td>
-                          {project.code}
-                        </td>
-
-                        <td>
-                          {project.client}
-                        </td>
-
-                        <td>
-                          {project.status}
-                        </td>
-
-                        <td>
-                          ₹
-                          {Number(
-                            project.budget,
-                          ).toLocaleString()}
-                        </td>
-
-                      </tr>
-
-                    ),
-                  )}
-
-                </tbody>
+                  </thead>
 
 
-              </table>
+                  <tbody>
+
+                    {projects.map(
+                      (project) => (
+
+                        <tr
+                          key={project.id}
+                          onClick={() =>
+                            navigate(
+                              `/projects/${project.id}`,
+                            )
+                          }
+                          style={{
+                            cursor: 'pointer',
+                          }}
+                        >
+
+                          <td>
+                            {project.name}
+                          </td>
+
+                          <td>
+                            {project.code}
+                          </td>
+
+                          <td>
+                            {project.client}
+                          </td>
+
+                          <td>
+                            {project.status}
+                          </td>
+
+                          <td>
+                            ₹
+                            {Number(
+                              project.budget,
+                            ).toLocaleString(
+                              'en-IN',
+                            )}
+                          </td>
+
+                        </tr>
+
+                      ),
+                    )}
+
+                  </tbody>
+
+                </table>
+
+
+                {totalPages > 1 && (
+
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      marginTop: '20px',
+                      padding: '12px 0',
+                    }}
+                  >
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setPage(
+                          (currentPage) =>
+                            Math.max(
+                              currentPage - 1,
+                              1,
+                            ),
+                        )
+                      }
+                      disabled={
+                        !hasPreviousPage ||
+                        loading
+                      }
+                    >
+                      Previous
+                    </button>
+
+
+                    <span>
+                      Page {page} of {totalPages}
+                    </span>
+
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setPage(
+                          (currentPage) =>
+                            currentPage + 1,
+                        )
+                      }
+                      disabled={
+                        !hasNextPage ||
+                        loading
+                      }
+                    >
+                      Next
+                    </button>
+
+                  </div>
+
+                )}
+
+              </>
 
             )}
 

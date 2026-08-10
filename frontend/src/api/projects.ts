@@ -25,10 +25,28 @@ export type ProjectInput = Omit<
 >
 
 
-export const getProjects = async (): Promise<Project[]> => {
+export interface ProjectListResponse {
+  count: number
+  next: string | null
+  previous: string | null
+  results: Project[]
+}
+
+
+export const getProjects = async (
+  page: number = 1,
+  pageSize: number = 20,
+): Promise<ProjectListResponse> => {
+
   const response =
-    await apiClient.get<Project[]>(
+    await apiClient.get<ProjectListResponse>(
       '/projects/',
+      {
+        params: {
+          page,
+          page_size: pageSize,
+        },
+      },
     )
 
   return response.data
@@ -38,6 +56,7 @@ export const getProjects = async (): Promise<Project[]> => {
 export const getProject = async (
   id: number,
 ): Promise<Project> => {
+
   const response =
     await apiClient.get<Project>(
       `/projects/${id}/`,
