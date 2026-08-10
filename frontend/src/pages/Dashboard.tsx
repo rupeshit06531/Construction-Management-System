@@ -176,7 +176,7 @@ function Dashboard() {
               </span>
 
               <strong>
-                ₹{Number(
+                  {'₹'}{Number(
                   kpi.total_expenses || 0,
                 ).toLocaleString('en-IN')}
               </strong>
@@ -191,7 +191,7 @@ function Dashboard() {
               </span>
 
               <strong>
-                ₹{Number(
+                  {'₹'}{Number(
                   kpi.total_payroll || 0,
                 ).toLocaleString('en-IN')}
               </strong>
