@@ -2,8 +2,11 @@ import { useEffect, useState } from 'react'
 
 import DashboardLayout from '../components/layout/DashboardLayout'
 import {
-  DashboardKPI,
   getDashboardKPI,
+} from '../api/dashboard'
+
+import type {
+  DashboardKPI,
 } from '../api/dashboard'
 
 
